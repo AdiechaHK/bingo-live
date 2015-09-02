@@ -17,8 +17,7 @@ var app = angular.module('hk-app', ['ngRoute'])
       if (response.status == 'connected') {
         FB.api('/me?fields=id,name', function(data) {
           $scope.user = data;
-
-          console.log($scope.user);
+          $scope.$apply();
         });
       }
     }
