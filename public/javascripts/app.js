@@ -3,7 +3,9 @@ var app = angular.module('hk-app', ['ngRoute'])
   .controller('WelcomeCtrl', ['$scope', function($scope) {
 
     // variables
-    $scope.user;
+    $scope.user = {
+      name: "-- user name --"
+    };
 
     // scope function
     $scope.start = function() {
@@ -15,6 +17,8 @@ var app = angular.module('hk-app', ['ngRoute'])
       if (response.status == 'connected') {
         FB.api('/me?fields=id,name', function(data) {
           $scope.user = data;
+
+          console.log($scope.user);
         });
       }
     }
