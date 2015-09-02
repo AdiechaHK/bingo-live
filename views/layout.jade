@@ -6,11 +6,10 @@ html
   body
 
     h1#fb-welcome
+    button(onClick="login()") Facebook login
 
     block content
 
-    script(src="/javascripts/vendor/fb/init-script.js")
+    script(src="//connect.facebook.net/en_US/sdk.js")
+    script(src="/javascripts/vendor/fb/init-script.js") 
 
-    .fb-like(data-share="true", data-width="450", data-show-faces="true")
-
-    must point to a directory (i.e., end with a '/' or a dynamic page (i.e., have a '?' somewhere).
