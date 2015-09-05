@@ -8,6 +8,13 @@ var app = require('../app');
 var debug = require('debug')('b-live:server');
 var http = require('http');
 
+var util = require('../helper/util');
+
+var Database = require('../objects/database');
+var Player = require('../objects/player');
+var Game = require('../objects/game');
+var db = new Database();
+
 /**
  * Get port from environment and store in Express.
  */
@@ -25,9 +32,96 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
+var chats = [{
+  name: "BOT",
+  message: "Just a testing first"
+}];
+
+var io = require('socket.io')(server);
+
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+io.on('connection', function (socket) {
+
+  console.log("connection established !");
+
+  socket.on('start_game', function(data) {
+    var game;
+    var order = db.hasWaitingGame()? 2: 1;
+    if(order == 1) {
+      game = new Game();
+      db.saveGame(game);
+      db.setWaitingGame(game.getId());
+    } else {
+      game = db.getWaitingGame();
+      db.resetWaitingGame();
+    }
+
+    var player = db.findPlayer(data.id);
+    if(player == null) {
+      player = new Player(data.id, data.name, game.getId());
+    } else {
+      player.setGame(game.getId());
+    }
+
+    game.setPlayer(player.getId(), order);
+    db.saveGame(game);
+    db.savePlayer(player);
+
+    var responce = db.returnResponce(game.getId(), player.getId());
+
+    if(order == 2) socket.broadcast.emit('opponent_found', {
+      game: game.getId(),
+      opponent: player.getName()
+    });
+
+    socket.emit('res_json', responce);
+  });
+
+  socket.on('game_action', function(data) {
+
+    var game = db.findGame(data.game);
+    game.addActionChar(data.chr)
+    var self = db.findPlayer(data.player);
+    var opp = db.findPlayer(game.getOpponent(data.player));
+
+    var selfRes = {
+      game: game.getId(),
+      actions: game.getActions(),
+      points: self.points(game.getActions()),
+      stat: false
+    }
+
+    var oppRes = {
+      game: game.getId(),
+      actions: game.getActions(),
+      points: opp.points(game.getActions()),
+      stat: true
+    }
+
+    if(selfRes.points == 5 ) {
+      if(oppRes.points == 5) {
+        selfRes['winner'] = "It's tie. ;)";
+        oppRes['winner'] = "It's tie. ;)";
+      } else {
+        selfRes['winner'] = "You won !";
+        oppRes['winner'] = "You lose, "+self.getName()+" won!";
+      }
+    } else if(oppRes.points == 5) {
+        selfRes['winner'] = "You lose, "+opp.getName()+" won!";
+        oppRes['winner'] = "You won !";
+    }
+
+    socket.emit('action_broadcast', selfRes);
+
+    socket.broadcast.emit('action_broadcast', oppRes);
+  });
+
+
+});
+
 
 /**
  * Normalize a port into a number, string, or false.

@@ -1,0 +1,131 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('b-live:server');
+var http = require('http');
+
+var Game = require('../objects/game');
+var Player = require('../objects/player');
+
+var Database = require('../objects/database');
+var db = new Database();
+
+// var games = require('../helper/game');
+
+
+var util = require('../helper/util');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+var io = require('socket.io')(server);
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+io.on('connection', function (socket) {
+  io.emit('bingo-connect', {
+    status: "success"
+  })
+  io.socket.on('start_game', function (data) {
+
+    var game = db.getWaitingGame();
+    var createGame = game == null;
+    if(createGame) {
+      game = new Game();
+    }
+
+    var player = new Player(data.id, data.name, game.getId());
+    if(createGame) {
+      game.setPlayer(player.getId(), 1);
+    } else {
+      game.setPlayer(player.getId(), 2);
+    }
+
+    db.savePlayer(player);
+    db.saveGame(game);
+
+    io.emit('game_update', db.returnResponce(game.getId(), player.getId()));
+
+  });
+});
+
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}

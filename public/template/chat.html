@@ -1,0 +1,13 @@
+<div>
+  <h1>Chat board</h1>
+  <div id="chat">
+    <div data-ng-repeat="chat in chats">
+      <strong> {{getName(chat.name)}} </strong>
+      {{chat.message}}
+    </div>
+    <div>
+      <input data-ng-model="myMsg" />
+      <button data-ng-click="sendChatMessage()">Send</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+<div id="game">
+  <h1>{{user.name}} vs {{opponent}}</h1>
+    
+  <div id="notYT">
+    Hey, It's not your turn right now !
+  </div>
+
+  
+  <div>
+    <table class="g-table" border="1" data-ng-if="user != undefined">
+      <tbody>
+        <tr data-ng-repeat="row in rowz">
+          <td
+            data-ng-repeat="cell in row.split('')"
+            data-ng-click="applyAction(cell)"
+            data-ng-class="cellClass(cell)"
+            > {{cell}} </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    {{(stat == true? "Your turn": "Waiting!")}}
+  </div>
+
+
+  <div>
+    Point: {{points}}
+  </div>
+
+  <div>
+    <strong>{{winingMsg}}</strong>
+  </div>
+
+
+</div>
