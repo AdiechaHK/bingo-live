@@ -153,60 +153,6 @@ var app = angular.module('hk-app', ['ngRoute'])
 
   }])
 
-  .controller('ChatCtrl', ['$scope', '$routeParams', function($scope, $routeParams) {
-
-
-    $scope.me;
-    $scope.myMsg;
-    $scope.chats;
-
-    var socket;
-
-    $scope.getName = function(name) {
-      return (name == $scope.me ? "Me: ": name + ": ");
-    }
-
-    $scope.sendChatMessage = function() {
-      var data = {
-        name: $scope.me,
-        message: $scope.myMsg
-      };
-      $scope.chats.push(data);
-      socket.emit('new_message', data);
-      $scope.myMsg = "";
-    }
-
-
-    var init =  function() {
-
-      $scope.chats = [];
-      $scope.me = prompt("Hey, Enter your name:");
-
-      socket = io();
-
-      socket.on('curr_message', function(data) {
-        console.log(data);
-        if(data.hasOwnProperty('chats') && data.chats.length > 0) {
-          $scope.chats = data.chats;
-          $scope.$apply();
-        } else {
-          console.log("No older chats found");
-        }
-      });
-
-      socket.on('message_found', function(data) {  
-        console.log("recieved message");
-        console.log(data);
-        $scope.chats.push(data);
-        $scope.$apply();
-      });
-
-    }
-
-    init();
-
-  }])
-
   .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 
     var pre = '/template/';
@@ -223,14 +169,6 @@ var app = angular.module('hk-app', ['ngRoute'])
         controller: 'GameCtrl',
       })
 
-      .when('/chat', {
-        templateUrl: pre + 'chat.html',
-        controller: 'ChatCtrl',
-      })
-
       .otherwise({redirectTo: '/'});
-
-
-    // $locationProvider.html5Mode(true);
 
   }]);
