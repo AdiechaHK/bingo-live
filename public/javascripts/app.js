@@ -64,13 +64,17 @@ var app = angular.module('hk-app', ['ngRoute'])
     }
 
     $scope.applyAction = function(c) {
-      if($scope.stat) {
-        $scope.game.actions += c;
-        socket.emit('game_action', {
-          'player': $scope.user.id,
-          'game': $scope.game.id,
-          'chr': c
-        });
+      if($scope.stat && $scope.winingMsg == undefined) {
+        if($scope.game.actions.indexOf(c) == -1) {
+          $scope.game.actions += c;
+          socket.emit('game_action', {
+            'player': $scope.user.id,
+            'game': $scope.game.id,
+            'chr': c
+          });
+        } else {
+          alert("It's already checked!");
+        }
       } else {
         $("#notYT").show();
         setTimeout(function() {
@@ -79,8 +83,10 @@ var app = angular.module('hk-app', ['ngRoute'])
       }
     }
 
-    $scope.bingoPoints = function() {
-      return "BINGO".substr(0, $scope.points).split("").join(" ");
+    $scope.bingoChar = function(p) {
+      p = p == undefined? 0: p;
+      v = p > 5? 5: p;
+      return "BINGO".substr(0, v).split("").join(" ") + "(" + p + ")";
     }
 
     var tableRows = function(map) {
@@ -101,7 +107,7 @@ var app = angular.module('hk-app', ['ngRoute'])
 
     var init =  function() {
 
-      $scope.winingMsg = "";
+      $scope.winingMsg = undefined;
       $("#notYT").hide();
       $scope.rowz = [];
 

@@ -101,8 +101,11 @@ io.on('connection', function (socket) {
       stat: true
     }
 
-    if(selfRes.points == 5 ) {
-      if(oppRes.points == 5) {
+    if(selfRes.points >= 5 ) {
+      if(oppRes.points > selfRes.points) {
+        selfRes['winner'] = "You lose, "+opp.getName()+" won!";
+        oppRes['winner'] = "You won !";
+      } else if(oppRes.points == selfRes.points) {
         selfRes['winner'] = "It's tie. ;)";
         oppRes['winner'] = "It's tie. ;)";
       } else {

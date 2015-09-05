@@ -13,9 +13,20 @@ a {
   text-align: center;
   vertical-align: middle;
   cursor: pointer;
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
 }
 
 #game table.g-table tr td.checked {
   background: gray;
   color: white;
+}
+#game table.g-table {
+  border-radius: 26px;
+  margin: auto;
+}
+
+#game .center {
+  text-align: center;
 }

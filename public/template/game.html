@@ -1,13 +1,18 @@
 <div id="game">
-  <h1>{{user.name}} vs {{opponent}}</h1>
+  <h1  class="center">{{user.name}} vs {{opponent}}</h1>
     
-  <div id="notYT">
+  <div id="notYT" class="center">
     Hey, It's not your turn right now !
   </div>
 
   
-  <div>
-    <table class="g-table" border="1" data-ng-if="user != undefined">
+  <div class="center">
+    <table 
+      class="g-table"
+      border="1"
+      cellspacing="5" 
+      data-ng-if="user != undefined"
+      >
       <tbody>
         <tr data-ng-repeat="row in rowz">
           <td
@@ -20,16 +25,16 @@
     </table>
   </div>
 
-  <div>
-    {{(stat == true? "Your turn": "Waiting!")}}
+  <div class="center">
+    {{(stat == true? "Your turn": "Waiting for oppnent!")}}
   </div>
 
 
-  <div>
-    Point: {{points}}
+  <div class="center">
+    Point: {{bingoChar(points)}}
   </div>
 
-  <div>
+  <div class="center">
     <strong>{{winingMsg}}</strong>
   </div>
 
