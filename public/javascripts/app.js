@@ -10,7 +10,11 @@ var app = angular.module('hk-app', ['ngRoute'])
     // scope function
     $scope.start = function() {
       // localStorage.setItem('user', JSON.stringify($scope.user));
-      window.location.hash = "#/game/" + $scope.user.id + "/" + $scope.user.name;
+      if($scope.user.id != undefined) {
+        window.location.hash = "#/game/" + $scope.user.id + "/" + $scope.user.name;
+      } else {
+        alert("Hey, need to login with facebook first to start the game, if you cancelled facebook login, just reload the page to retry facebook login.");
+      }
     }
 
     // isolated functions
