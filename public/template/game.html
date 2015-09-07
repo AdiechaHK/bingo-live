@@ -19,7 +19,7 @@
             data-ng-repeat="cell in row.split('')"
             data-ng-click="applyAction(cell)"
             data-ng-class="cellClass(cell)"
-            > {{cell}} </td>
+            > {{alphabet.indexOf(cell)}} </td>
         </tr>
       </tbody>
     </table>

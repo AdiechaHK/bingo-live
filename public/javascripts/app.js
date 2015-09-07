@@ -60,6 +60,7 @@ var app = angular.module('hk-app', ['ngRoute'])
     $scope.actions;
     $scope.points;
     $scope.winingMsg;
+    $scope.alphabet;
 
     var socket;
 
@@ -111,6 +112,7 @@ var app = angular.module('hk-app', ['ngRoute'])
 
     var init =  function() {
 
+      $scope.alphabet = "_ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       $scope.winingMsg = undefined;
       $("#notYT").hide();
       $scope.rowz = [];
