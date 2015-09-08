@@ -4,7 +4,7 @@ var app = angular.module('hk-app', ['ngRoute'])
 
     // variables
     $scope.user = {
-      name: "-- user name --"
+      name: "dear, please login"
     };
 
     // scope function
@@ -16,6 +16,7 @@ var app = angular.module('hk-app', ['ngRoute'])
         alert("Hey, need to login with facebook first to start the game, if you cancelled facebook login, just reload the page to retry facebook login.");
       }
     }
+
 
     // isolated functions
     var onLogin = function(response) {
@@ -43,6 +44,14 @@ var app = angular.module('hk-app', ['ngRoute'])
     }
 
     var init = function() {
+      login();
+    }
+
+    $scope.isLoggedIn = function() {
+      return $scope.user.hasOwnProperty('id');
+    }
+
+    $scope.doLogin = function() {
       login();
     }
 

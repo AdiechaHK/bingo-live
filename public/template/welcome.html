@@ -5,6 +5,7 @@
     Hello {{user.name}}
   </h1>
 
-  <button data-ng-click="start()">Get started</button>
+  <button data-ng-if="isLoggedIn()" data-ng-click="start()">Get started</button>
+  <button data-ng-if="!isLoggedIn()" data-ng-click="doLogin()">Login</button>
   
 </div>
